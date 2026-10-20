@@ -1,0 +1,71 @@
+﻿@model List<WebApplication1.Models.Member>
+
+@{
+    ViewData["Title"] = "รายชื่อสมาชิก";
+}
+
+<h2>รายชื่อสมาชิก</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form asp-action="Index" method="get" class="d-flex mb-3" style="gap:8px;">
+    <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control" placeholder="พิมพ์ชื่อหรืออีเมลที่ต้องการค้นหา" style="max-width:300px;" />
+    <button type="submit" class="btn btn-primary">ค้นหา</button>
+    <a asp-action="Index" class="btn btn-secondary">แสดงทั้งหมด</a>
+    <a asp-action="Create" class="btn btn-success">+ เพิ่มสมาชิก</a>
+</form>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>รหัส</th>
+            <th>ชื่อ</th>
+            <th>อีเมล</th>
+            <th>เพศ</th>
+            <th>วันเกิด</th>
+            <th>เบอร์โทร</th>
+            <th>ประเทศ</th>
+            <th>จัดการ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count == 0)
+        {
+            <tr>
+                <td colspan="8" class="text-center">ไม่พบข้อมูลสมาชิก</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var member in Model)
+            {
+                <tr>
+                    <td>@member.Id</td>
+                    <td>@member.Name</td>
+                    <td>@member.Email</td>
+                    <td>@member.Gender</td>
+                    <td>@(member.Birthday?.ToString("yyyy-MM-dd"))</td>
+                    <td>@member.Phone</td>
+                    <td>@member.Country</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@member.Id" class="btn btn-sm btn-warning">แก้ไข</a>
+                        <form asp-action="Delete" asp-route-id="@member.Id" method="post" style="display:inline;"
+                              onsubmit="return confirm('ยืนยันการลบสมาชิกรหัส @member.Id ?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-danger">ลบ</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<p>พบทั้งหมด @Model.Count รายการ</p>

@@ -1,0 +1,51 @@
+﻿@model WebApplication1.Models.Product
+@{
+    ViewData["Title"] = "แก้ไขสินค้า";
+}
+
+<h2>แก้ไข / ลบสินค้า (รหัส @Model.Id)</h2>
+
+@* ========== ฟอร์มที่ 1: แก้ไขข้อมูล ========== *@
+<form asp-action="Edit" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    @* สำคัญมาก! ถ้าไม่ส่ง Id ไปด้วย ตอน Update จะไม่รู้ว่าแก้แถวไหน *@
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label class="form-label">ชื่อสินค้า</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">ราคา</label>
+        <input asp-for="Price" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">ประเภทสินค้า</label>
+        <select asp-for="TypeId" asp-items="ViewBag.TypeList" class="form-select">
+            <option value="">-- เลือกประเภทสินค้า --</option>
+        </select>
+        <span asp-validation-for="TypeId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">รายละเอียด</label>
+        <textarea asp-for="Detail" class="form-control" rows="4"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
+    <a asp-action="Index" class="btn btn-secondary">ยกเลิก</a>
+</form>
+
+<hr />
+
+@* ========== ฟอร์มที่ 2: ลบข้อมูล ========== *@
+<form asp-action="Delete" method="post"
+      onsubmit="return confirm('ยืนยันการลบข้อมูล? การลบไม่สามารถย้อนกลับได้');">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">ลบสินค้านี้</button>
+</form>
